@@ -4,9 +4,10 @@ import { calendarPlus } from "gd-sprest-bs/build/icons/svgs/calendarPlus";
 import { gearWideConnected } from "gd-sprest-bs/build/icons/svgs/gearWideConnected";
 import * as moment from "moment";
 import { Configuration } from "./cfg";
-import { DataSource, IEventItem } from "./ds";
+import { IEventItem } from "./ds";
 import { EventForms } from "./eventForms";
 import { Registration } from "./registration";
+import { Security } from "./security";
 
 export class Admin {
   // Generates the navigation items
@@ -14,7 +15,7 @@ export class Admin {
     let navItems: Components.INavbarItem[] = [];
 
     // See if this is the admin
-    if (DataSource.IsAdmin) {
+    if (Security.IsAdmin) {
       // Add the new event option
       navItems.push({
         className: "btn-primary",
@@ -40,14 +41,14 @@ export class Admin {
             text: "Managers",
             onClick: () => {
               // Show the manager's group
-              window.open(DataSource.ManagersUrl, "_blank");
+              window.open(Security.ManagersUrl, "_blank");
             },
           },
           {
             text: "Members",
             onClick: () => {
               // Show the member's group
-              window.open(DataSource.MembersUrl, "_blank");
+              window.open(Security.MembersUrl, "_blank");
             },
           },
         ],
@@ -65,7 +66,7 @@ export class Admin {
           LoadingDialog.show();
 
           // Determine if an install is required
-          InstallationRequired.requiresInstall(Configuration).then(() => {
+          InstallationRequired.requiresInstall({ cfg: Configuration }).then(() => {
             // Hide the dialog
             LoadingDialog.hide();
 

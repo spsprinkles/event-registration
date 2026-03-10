@@ -54,7 +54,7 @@ export class Registration {
     static isFull(event: IEventItem) {
         // Determine if the course is full
         let numUsers: number = event.RegisteredUsersId ? event.RegisteredUsersId.results.length : 0;
-        let capacity: number = event.Capacity ? (parseInt(event.Capacity) as number) : 0;
+        let capacity: number = event.Capacity ? event.Capacity : 0;
         return numUsers == capacity ? true : false;
     }
 

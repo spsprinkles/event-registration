@@ -1,7 +1,9 @@
-import { InstallationRequired } from "dattatable";
+import { LoadingDialog } from "dattatable";
 import { App } from "./app";
 import { Configuration } from "./cfg";
 import { DataSource } from "./ds";
+import { InstallationModal } from "./install";
+import { Security } from "./security";
 import Strings, { setContext } from "./strings";
 
 // Styling
@@ -26,16 +28,23 @@ const GlobalVariable = {
             },
             // Error
             () => {
-                // See if an install is required
-                InstallationRequired.requiresInstall(Configuration).then(installFl => {
-                    // See if an installation is required
-                    if (installFl) {
-                        // Show the installation dialog
-                        InstallationRequired.showDialog();
-                    } else {
-                        // Log
-                        console.error("[" + Strings.ProjectName + "] Error initializing the solution.");
+                // Update the loading dialog
+                LoadingDialog.setHeader("Error Loading Application");
+                LoadingDialog.setBody("Doing some more checks...");
+
+                // See if the user has the correct permissions
+                Security.hasPermissions().then(hasPermissions => {
+                    // See if the user has permissions
+                    if (hasPermissions) {
+                        // Show the installation modal
+                        InstallationModal.show();
                     }
+
+                    // Hide the dialog
+                    LoadingDialog.hide();
+                }, () => {
+                    // Hide the dialog
+                    LoadingDialog.hide();
                 });
             }
         );
