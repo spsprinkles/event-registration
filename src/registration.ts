@@ -1,5 +1,5 @@
 import { LoadingDialog } from "dattatable";
-import { Components, ContextInfo, Utility, Web } from "gd-sprest-bs";
+import { Components, ContextInfo, Web } from "gd-sprest-bs";
 import { IEventItem } from "./ds";
 import * as moment from "moment";
 import { calendarPlusFill } from "gd-sprest-bs/build/icons/svgs/calendarPlusFill"
@@ -242,20 +242,14 @@ export class Registration {
                 // See if the user email exists and is registering for the event
                 if (userEmail) {
                     // Send the email
-                    Utility().sendEmail({
-                        To: [userEmail],
-                        Subject: subject,
-                        Body: body,
-                    }).execute(
-                        () => {
-                            console.log("Successfully sent email");
-                            resolve();
-                        },
-                        () => {
-                            console.error("Error sending email");
-                            resolve();
-                        }
-                    );
+                    event.update({
+                        SendEmail: "Custom",
+                        SendEmailInfo: JSON.stringify({
+                            To: userEmail,
+                            Subject: subject,
+                            Body: body
+                        })
+                    });
                 } else {
                     // Resolve the request
                     resolve();

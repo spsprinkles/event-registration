@@ -4,8 +4,9 @@
   "description": "Register for events.",
   "main": "src/index.ts",
   "scripts": {
-    "all": "npm run build && npm run prod",
+    "all": "npm run build && npm run prod && npm run flow",
     "build": "webpack --mode=development",
+    "flow": "node ./flow.js",
     "prod": "webpack --mode=production"
   },
   "repository": {
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
+    "archiver": "^7.0.1",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
     "html-loader": "^5.1.0",

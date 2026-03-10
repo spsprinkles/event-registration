@@ -1,5 +1,5 @@
 import { LoadingDialog, Modal } from "dattatable";
-import { Components, Utility } from "gd-sprest-bs";
+import { Components } from "gd-sprest-bs";
 import { gearWideConnected } from "gd-sprest-bs/build/icons/svgs/gearWideConnected";
 import { IEventItem } from "./ds";
 import { Registration } from "./registration";
@@ -94,10 +94,13 @@ export class Member {
                             }
 
                             // Send the email
-                            Utility().sendEmail({
-                                To: pocs,
-                                Body: values["EmailBody"].replace(/\n/g, "<br />"),
-                                Subject: values["EmailSubject"]
+                            eventItem.update({
+                                SendEmail: "Custom",
+                                SendEmailInfo: JSON.stringify({
+                                    To: pocs,
+                                    Body: values["EmailBody"].replace(/\n/g, "<br />"),
+                                    Subject: values["EmailSubject"]
+                                })
                             }).execute(() => {
                                 // Close the loading dialog
                                 LoadingDialog.hide();

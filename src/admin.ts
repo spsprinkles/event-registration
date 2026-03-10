@@ -1,5 +1,5 @@
 import { InstallationRequired, LoadingDialog, Modal } from "dattatable";
-import { Components, Helper, Utility } from "gd-sprest-bs";
+import { Components, Helper } from "gd-sprest-bs";
 import { calendarPlus } from "gd-sprest-bs/build/icons/svgs/calendarPlus";
 import { gearWideConnected } from "gd-sprest-bs/build/icons/svgs/gearWideConnected";
 import * as moment from "moment";
@@ -603,19 +603,18 @@ export class Admin {
               // Ensure we are sending an email
               if ((To && To.length > 0) || (CC && CC.length > 0)) {
                 // Send the email
-                Utility().sendEmail({
-                  To,
-                  CC,
-                  Body: values["EmailBody"].replace(/\n/g, "<br />"),
-                  Subject: values["EmailSubject"]
+                eventItem.update({
+                  SendEmail: "Custom",
+                  SendEmailInfo: JSON.stringify({
+                    To,
+                    CC,
+                    Body: values["EmailBody"].replace(/\n/g, "<br />"),
+                    Subject: values["EmailSubject"]
+                  })
                 }).execute(() => {
                   // Close the loading dialog
                   LoadingDialog.hide();
                 });
-              } else {
-                // Close the loading dialog
-                LoadingDialog.hide();
-
               }
             }
           }
