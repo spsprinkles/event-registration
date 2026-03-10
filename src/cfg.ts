@@ -96,6 +96,28 @@ export const Configuration = Helper.SPConfig({
                     type: Helper.SPCfgFieldType.Boolean,
                     showInEditForm: false,
                     showInNewForm: false,
+                },
+                {
+                    name: "SendEmail",
+                    title: "Send Email?",
+                    type: Helper.SPCfgFieldType.Choice,
+                    defaultValue: "",
+                    showInEditForm: false,
+                    showInNewForm: false,
+                    showInViewForms: false,
+                    showInDisplayForm: false,
+                    choices: [
+                        "Cancel", "Uncancel", 
+                    ]
+                } as Helper.IFieldInfoChoice,
+                {
+                    name: "SendEmailInfo",
+                    title: "Send Email Info",
+                    type: Helper.SPCfgFieldType.Text,
+                    showInEditForm: false,
+                    showInNewForm: false,
+                    showInViewForms: false,
+                    showInDisplayForm: false
                 }
             ],
             ViewInformation: [

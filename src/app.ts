@@ -1,7 +1,6 @@
 import { Dashboard, ItemForm, LoadingDialog } from "dattatable";
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
 import { calendarEvent } from "gd-sprest-bs/build/icons/svgs/calendarEvent";
-import * as jQuery from "jquery";
 import * as moment from "moment";
 import { Admin } from "./admin";
 import { Calendar } from "./calendar";
@@ -9,6 +8,7 @@ import { DocumentsView } from "./documents"
 import { DataSource, IEventItem } from "./ds";
 import { Member } from "./member";
 import { Registration } from "./registration";
+import { Security } from "./security";
 import Strings from "./strings";
 
 /**
@@ -21,7 +21,6 @@ export class App {
   private _canViewEvent: boolean;
   private _dashboard: Dashboard = null;
   private _el: HTMLElement = null;
-  private _isAdmin: boolean = false;
 
   // Constructor
   constructor(el: HTMLElement) {
@@ -33,9 +32,6 @@ export class App {
     this._canEditEvent = Helper.hasPermissions(DataSource.EventRegPerms, [SPTypes.BasePermissionTypes.EditListItems]);
     this._canViewEvent = Helper.hasPermissions(DataSource.EventRegPerms, [SPTypes.BasePermissionTypes.ViewListItems]);
     this._el = el;
-
-    // Get admin status
-    this._isAdmin = DataSource.IsAdmin;
 
     // Render the dashboard
     this.render();
@@ -102,7 +98,7 @@ export class App {
         items: admin.generateNavItems(this._canEditEvent, () => { this.refresh(); })
       },
       subNavigation: {
-        showFilter: this._isAdmin,
+        showFilter: Security.IsAdmin,
       },
       footer: {
         itemsEnd: [
@@ -113,9 +109,9 @@ export class App {
       },
       table: {
         rows: DataSource.Events,
-        dtProps: {
-          dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
-          columnDefs: [
+        onRendering: dtProps => {
+          // Remove the ability to sort and search
+          dtProps.columnDefs = [
             {
               targets: [0, 6, 10, 11, 12],
               orderable: false,
@@ -142,25 +138,22 @@ export class App {
                 let trunc = esc(data.substr(0, 50).replace(/\s([^\s]*)$/, ''));
                 return '<span title="' + esc(data) + '">' + trunc + '&#8230;</span>';
               }
-            },
-            this._isAdmin || DataSource.Configuration.hideAddToCalendarColumn == true ? { targets: [12], visible: false } : null
-          ],
-          // Add some classes to the dataTable elements
-          drawCallback: function () {
-            jQuery(".table", this._table).removeClass("no-footer");
-            jQuery(".table", this._table).addClass("tbl-footer");
-            jQuery(".table", this._table).addClass("table-striped");
-            jQuery(".table thead th", this._table).addClass("align-middle");
-            jQuery(".table tbody td", this._table).addClass("align-middle");
-            jQuery(".dataTables_info", this._table).addClass("text-center");
-            jQuery(".dataTables_length", this._table).addClass("pt-2");
-            jQuery(".dataTables_paginate", this._table).addClass("pt-03");
-          },
+            }
+          ];
+
+          // See if this is the admin or we are hiding the calendar column
+          if (Security.IsAdmin || DataSource.Configuration.hideAddToCalendarColumn == true) {
+            dtProps.columnDefs.push({ targets: [12], visible: false });
+          }
+
           // Sort descending by Start Date
-          order: [[3, "asc"]],
-          language: {
-            emptyTable: "No events were found",
-          },
+          dtProps.order = [[3, "asc"]];
+
+          // Set the empty table message
+          dtProps.language.emptyTable = "No events were found";
+
+          // Return the properties
+          return dtProps;
         },
         columns: [
           {
@@ -302,7 +295,7 @@ export class App {
             title: "Documents",
             onRenderCell: (el, column, item: IEventItem) => {
               // Render the document column
-              new DocumentsView(el, item, this._isAdmin, this._canEditEvent, () => { this.refresh(); });
+              new DocumentsView(el, item, Security.IsAdmin, this._canEditEvent, () => { this.refresh(); });
             },
           },
           {
@@ -310,15 +303,9 @@ export class App {
             name: "",
             title: "Open Spots",
             onRenderCell: (el, column, item: IEventItem) => {
-              let capacity: number = item.Capacity
-                ? (parseInt(item.Capacity) as number)
-                : 0;
-              let numUsers: number = item.RegisteredUsersId
-                ? item.RegisteredUsersId.results.length
-                : 0;
-              let numWaitlisted: number = item.WaitListedUsersId
-                ? item.WaitListedUsersId.results.length
-                : 0;
+              let capacity: number = item.Capacity ? item.Capacity : 0;
+              let numUsers: number = item.RegisteredUsersId ? item.RegisteredUsersId.results.length : 0;
+              let numWaitlisted: number = item.WaitListedUsersId ? item.WaitListedUsersId.results.length : 0;
               let eventFull: boolean = capacity == numUsers ? true : false;
               if (eventFull) {
                 // Render the badges
@@ -394,9 +381,9 @@ export class App {
           {
             // 11 - User/Admin Options
             name: "",
-            title: this._isAdmin ? "Manage Event" : "Event Options",
+            title: Security.IsAdmin ? "Manage Event" : "Event Options",
             onRenderCell: (el, column, item: IEventItem) => {
-              if (this._isAdmin) {
+              if (Security.IsAdmin) {
                 // Render the admin menu
                 admin.renderEventMenu(el, item, this._canEditEvent, this._canDeleteEvent, () => { this.refresh(); });
               } else {
@@ -410,7 +397,7 @@ export class App {
             name: "",
             title: "",
             onRenderCell: (el, column, item: IEventItem) => {
-              new Calendar(el, item, this._isAdmin);
+              new Calendar(el, item, Security.IsAdmin);
             }
           }
         ]

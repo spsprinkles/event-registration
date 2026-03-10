@@ -1,12 +1,13 @@
 import { InstallationRequired, LoadingDialog, Modal } from "dattatable";
-import { Components, Helper, Utility } from "gd-sprest-bs";
+import { Components, Helper } from "gd-sprest-bs";
 import { calendarPlus } from "gd-sprest-bs/build/icons/svgs/calendarPlus";
 import { gearWideConnected } from "gd-sprest-bs/build/icons/svgs/gearWideConnected";
 import * as moment from "moment";
 import { Configuration } from "./cfg";
-import { DataSource, IEventItem } from "./ds";
+import { IEventItem } from "./ds";
 import { EventForms } from "./eventForms";
 import { Registration } from "./registration";
+import { Security } from "./security";
 
 export class Admin {
   // Generates the navigation items
@@ -14,7 +15,7 @@ export class Admin {
     let navItems: Components.INavbarItem[] = [];
 
     // See if this is the admin
-    if (DataSource.IsAdmin) {
+    if (Security.IsAdmin) {
       // Add the new event option
       navItems.push({
         className: "btn-primary",
@@ -40,14 +41,14 @@ export class Admin {
             text: "Managers",
             onClick: () => {
               // Show the manager's group
-              window.open(DataSource.ManagersUrl, "_blank");
+              window.open(Security.ManagersUrl, "_blank");
             },
           },
           {
             text: "Members",
             onClick: () => {
               // Show the member's group
-              window.open(DataSource.MembersUrl, "_blank");
+              window.open(Security.MembersUrl, "_blank");
             },
           },
         ],
@@ -65,7 +66,7 @@ export class Admin {
           LoadingDialog.show();
 
           // Determine if an install is required
-          InstallationRequired.requiresInstall(Configuration).then(() => {
+          InstallationRequired.requiresInstall({ cfg: Configuration }).then(() => {
             // Hide the dialog
             LoadingDialog.hide();
 
@@ -602,19 +603,18 @@ export class Admin {
               // Ensure we are sending an email
               if ((To && To.length > 0) || (CC && CC.length > 0)) {
                 // Send the email
-                Utility().sendEmail({
-                  To,
-                  CC,
-                  Body: values["EmailBody"].replace(/\n/g, "<br />"),
-                  Subject: values["EmailSubject"]
+                eventItem.update({
+                  SendEmail: "Custom",
+                  SendEmailInfo: JSON.stringify({
+                    To,
+                    CC,
+                    Body: values["EmailBody"].replace(/\n/g, "<br />"),
+                    Subject: values["EmailSubject"]
+                  })
                 }).execute(() => {
                   // Close the loading dialog
                   LoadingDialog.hide();
                 });
-              } else {
-                // Close the loading dialog
-                LoadingDialog.hide();
-
               }
             }
           }

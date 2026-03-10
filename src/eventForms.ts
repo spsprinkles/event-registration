@@ -1,5 +1,5 @@
 import { ItemForm, LoadingDialog, Modal } from "dattatable";
-import { Components, Utility } from "gd-sprest-bs";
+import { Components } from "gd-sprest-bs";
 import * as moment from "moment";
 import { IEventItem } from "./ds";
 
@@ -51,40 +51,12 @@ export class EventForms {
                             LoadingDialog.show();
 
                             // Update the item
-                            eventItem.update({ IsCancelled: true }).execute(() => {
+                            eventItem.update({ IsCancelled: true, SendEmail: sendEmail ? "Cancel" : null }).execute(() => {
                                 // Refresh the dashboard
                                 onRefresh();
 
-                                // See if we are sending an email
-                                if (sendEmail) {
-                                    // Parse the pocs
-                                    let pocs = [];
-                                    for (let i = 0; i < eventItem.POC.results.length; i++) {
-                                        // Append the user email
-                                        pocs.push(eventItem.POC.results[i].EMail);
-                                    }
-
-                                    // Parse the registered users
-                                    let users = [];
-                                    for (let i = 0; i < eventItem.RegisteredUsers.results.length; i++) {
-                                        // Append the user email
-                                        users.push(eventItem.RegisteredUsers.results[i].EMail);
-                                    }
-
-                                    // Send the email
-                                    Utility().sendEmail({
-                                        To: users,
-                                        CC: pocs,
-                                        Subject: "Event '" + eventItem.Title + "' Cancelled",
-                                        Body: '<p>Event Members,</p><p>The event has been cancelled.</p><p>r/,</p><p>Event Registration Admins</p>'
-                                    }).execute(() => {
-                                        // Close the loading dialog
-                                        LoadingDialog.hide();
-                                    });
-                                } else {
-                                    // Close the loading dialog
-                                    LoadingDialog.hide();
-                                }
+                                // Close the loading dialog
+                                LoadingDialog.hide();
                             });
                         }
                     }
@@ -226,45 +198,17 @@ export class EventForms {
                             Modal.hide();
 
                             // Show a loading dialog
-                            LoadingDialog.setHeader("Cancelling Event");
+                            LoadingDialog.setHeader("Uncancelling Event");
                             LoadingDialog.setBody("This dialog will close after the item is updated.");
                             LoadingDialog.show();
 
                             // Update the item
-                            eventItem.update({ IsCancelled: false }).execute(() => {
+                            eventItem.update({ IsCancelled: false, SendEmail: sendEmail ? "Uncancel" : null }).execute(() => {
                                 // Refresh the dashboard
                                 onRefresh();
 
-                                // See if we are sending an email
-                                if (sendEmail) {
-                                    // Parse the pocs
-                                    let pocs = [];
-                                    for (let i = 0; i < eventItem.POC.results.length; i++) {
-                                        // Append the user email
-                                        pocs.push(eventItem.POC.results[i].EMail);
-                                    }
-
-                                    // Parse the registered users
-                                    let users = [];
-                                    for (let i = 0; i < eventItem.RegisteredUsers.results.length; i++) {
-                                        // Append the user email
-                                        users.push(eventItem.RegisteredUsers.results[i].EMail);
-                                    }
-
-                                    // Send the email
-                                    Utility().sendEmail({
-                                        To: users,
-                                        CC: pocs,
-                                        Subject: "Event '" + eventItem.Title + "' Uncancelled",
-                                        Body: '<p>Event Members,</p><p>The event is no longer cancelled.</p><p>r/,</p><p>Event Registration Admins</p>'
-                                    }).execute(() => {
-                                        // Close the loading dialog
-                                        LoadingDialog.hide();
-                                    });
-                                } else {
-                                    // Close the loading dialog
-                                    LoadingDialog.hide();
-                                }
+                                // Close the loading dialog
+                                LoadingDialog.hide();
                             });
                         }
                     }
