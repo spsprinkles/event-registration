@@ -134,7 +134,7 @@ export class DataSource {
                 );
             }
             // Load the user permissions for the Events list
-            web.Lists(Strings.Lists.Events).getUserEffectivePermissions("i:0#.f|membership|" + ContextInfo.userLoginName).execute(perm => {
+            web.Lists(Strings.Lists.Events).getUserEffectivePermissions(Security.CurrentUser.LoginName).execute(perm => {
                 // Save the user permissions
                 this._eventRegPerms = perm.GetUserEffectivePermissions;
             }, () => {

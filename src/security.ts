@@ -10,6 +10,9 @@ import Strings from "./strings";
 export class Security {
     private static _listSecurity: ListSecurity = null;
 
+    // Current User
+    static get CurrentUser(): Types.SP.User { return this._listSecurity.CurrentUser; }
+
     // Admin
     private static _isAdmin: boolean = false;
     static get IsAdmin(): boolean { return this._isAdmin; }
