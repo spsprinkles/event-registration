@@ -3,6 +3,8 @@ name: Build & Package
 on:
   project:
     types: [ closed ]
+  pull_request:
+    types: [ closed ]
   release:
     types: [ published ]
   workflow_dispatch:
@@ -13,28 +15,31 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
     
     steps:
     - uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Install Libraries
       run: |
         npm install
+        cd spfx
+        npm install
+        cd ..
 
     - name: Build
       run: |
         npm run all
 
     - name: Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: artifacts
         path: |
-          assets/config.json
+          assets
           dist
