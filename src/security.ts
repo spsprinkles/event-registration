@@ -53,12 +53,12 @@ export class Security {
                 ],
                 onGroupsLoaded: () => {
                     // Set the groups
-                    this._adminGroup = this._listSecurity.getGroup(ListSecurityDefaultGroups.Owners);
-                    this._memberGroup = this._listSecurity.getGroup(ListSecurityDefaultGroups.Members);
+                    this._adminGroup = this._listSecurity.getGroup(DataSource.Configuration.adminGroupName || ListSecurityDefaultGroups.Owners);
+                    this._memberGroup = this._listSecurity.getGroup(DataSource.Configuration.membersGroupName || ListSecurityDefaultGroups.Members);
                     this._visitorGroup = this._listSecurity.getGroup(ListSecurityDefaultGroups.Visitors);
 
                     // Set the user flags
-                    this._isAdmin = this._listSecurity.isInGroup(ContextInfo.userId, ListSecurityDefaultGroups.Owners);
+                    this._isAdmin = this._listSecurity.isInGroup(ContextInfo.userId, DataSource.Configuration.adminGroupName || ListSecurityDefaultGroups.Owners);
 
                     // Ensure the groups exist
                     if (this._adminGroup && this._memberGroup && this._visitorGroup) {

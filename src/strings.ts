@@ -33,6 +33,6 @@ const Strings = {
     EventRegConfig: SourceUrl + "eventreg-config.json",
     SolutionUrl: SourceUrl + "index.html",
     SourceUrl: SourceUrl,
-    Version: "0.1",
+    Version: "0.2",
 };
 export default Strings;
