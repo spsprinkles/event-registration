@@ -211,7 +211,11 @@ export class Registration {
                         },
                         // Error
                         () => {
-                            // TODO
+                            // Hide the dialog
+                            LoadingDialog.hide();
+
+                            // Show an error in the console
+                            console.error("Error updating the event registration.");
                         }
                     );
                 }
@@ -249,6 +253,9 @@ export class Registration {
                             Subject: subject,
                             Body: body
                         })
+                    }).execute(() => {
+                        // Resolve the request
+                        resolve();
                     });
                 } else {
                     // Resolve the request
