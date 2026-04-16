@@ -40,8 +40,8 @@ export class App {
     LoadingDialog.setHeader("Refreshing the Data");
     LoadingDialog.setBody("This will close after the data is loaded.");
 
-    // Load the events
-    DataSource.init().then(() => {
+    // Refresh the events
+    DataSource.List.refresh().then(() => {
       // Clear the element
       while (this._el.firstChild) { this._el.removeChild(this._el.firstChild); }
 

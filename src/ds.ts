@@ -134,11 +134,11 @@ export class DataSource {
     static get StatusFilters(): Components.ICheckboxGroupItem[] { return this._statusFilters; }
 
     // Loads the list data
-    static init(): PromiseLike<any> {
+    static init(config: string): PromiseLike<any> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Load the optional configuration file
-            this.loadConfiguration().then(() => {
+            this.loadConfiguration(config).then(() => {
                 // Initialize the security
                 Security.init().then(() => {
                     // Initialize the solution
@@ -154,9 +154,20 @@ export class DataSource {
     // Configuration
     private static _cfg: IConfiguration = null;
     static get Configuration(): IConfiguration { return this._cfg; }
-    static loadConfiguration(): PromiseLike<void> {
+    static loadConfiguration(config: string): PromiseLike<void> {
         // Return a promise
         return new Promise(resolve => {
+            // See if the configuration was passed as a string
+            if (config) {
+                // Try to convert the configuration to a json object
+                try {
+                    let cfg = JSON.parse(config);
+                    this._cfg = cfg;
+                    resolve();
+                    return;
+                } catch { }
+            }
+
             // Get the current web
             Web().getFileByServerRelativeUrl(Strings.EventRegConfig).content().execute(
                 // Success

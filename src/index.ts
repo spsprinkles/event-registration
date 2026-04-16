@@ -12,7 +12,7 @@ import "./styles.scss";
 // Create the global variable for this solution
 const GlobalVariable = {
     Configuration,
-    render: (el: HTMLElement, context?) => {
+    render: (el: HTMLElement, context?, config?: string) => {
         // See if the page context exists
         if (context) {
             // Set the context
@@ -20,7 +20,7 @@ const GlobalVariable = {
         }
 
         // Initialize the solution
-        DataSource.init().then(
+        DataSource.init(config).then(
             // Success
             () => {
                 // Create the application

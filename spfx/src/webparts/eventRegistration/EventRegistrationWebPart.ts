@@ -11,7 +11,7 @@ import * as strings from 'EventRegistrationWebPartStrings';
 // Reference the solution
 import "main-lib";
 declare const EventRegistration: {
-  render: (el: HTMLElement, context: WebPartContext) => void;
+  render: (el: HTMLElement, context: WebPartContext, configuration: string) => void;
 };
 
 export interface IEventRegistrationWebPartProps {
@@ -25,7 +25,7 @@ export default class EventRegistrationWebPart extends BaseClientSideWebPart<IEve
     while (this.domElement.firstChild) { this.domElement.removeChild(this.domElement.firstChild); }
 
     // Render the application
-    EventRegistration.render(this.domElement, this.context);
+    EventRegistration.render(this.domElement, this.context, this.properties.configuration);
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
