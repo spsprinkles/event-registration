@@ -1,5 +1,5 @@
-import { Dashboard, ItemForm, LoadingDialog } from "dattatable";
-import { Components, Helper, SPTypes } from "gd-sprest-bs";
+import { Dashboard, LoadingDialog, Modal } from "dattatable";
+import { Components, SPTypes } from "gd-sprest-bs";
 import { calendarEvent } from "gd-sprest-bs/build/icons/svgs/calendarEvent";
 import * as moment from "moment";
 import { Admin } from "./admin";
@@ -24,13 +24,10 @@ export class App {
 
   // Constructor
   constructor(el: HTMLElement) {
-    // Set the list name
-    ItemForm.ListName = Strings.Lists.Events;
-
     // Set the global variables
-    this._canDeleteEvent = Helper.hasPermissions(DataSource.EventRegPerms, [SPTypes.BasePermissionTypes.DeleteListItems]);
-    this._canEditEvent = Helper.hasPermissions(DataSource.EventRegPerms, [SPTypes.BasePermissionTypes.EditListItems]);
-    this._canViewEvent = Helper.hasPermissions(DataSource.EventRegPerms, [SPTypes.BasePermissionTypes.ViewListItems]);
+    this._canDeleteEvent = DataSource.List.hasPermissions([SPTypes.BasePermissionTypes.DeleteListItems]);;
+    this._canEditEvent = DataSource.List.hasPermissions([SPTypes.BasePermissionTypes.EditListItems]);
+    this._canViewEvent = DataSource.List.hasPermissions([SPTypes.BasePermissionTypes.ViewListItems]);
     this._el = el;
 
     // Render the dashboard
@@ -173,7 +170,7 @@ export class App {
                   toggle: "tooltip",
                   type: Components.ButtonTypes.OutlinePrimary,
                   onClick: (button) => {
-                    ItemForm.view({
+                    DataSource.List.viewForm({
                       itemId: item.Id,
                       useModal: true,
                       onCreateViewForm: (props) => {
@@ -182,17 +179,6 @@ export class App {
                           "WaitListedUsers",
                         ];
                         return props;
-                      },
-                      onSetFooter: (elFooter) => {
-                        // Render the close button
-                        Components.Button({
-                          el: elFooter,
-                          text: "Close",
-                          type: Components.ButtonTypes.Secondary,
-                          onClick: (button) => {
-                            ItemForm.close();
-                          }
-                        });
                       }
                     });
                     document.querySelector(".modal-dialog").classList.add("modal-dialog-scrollable");

@@ -1,7 +1,7 @@
-import { ItemForm, LoadingDialog, Modal } from "dattatable";
+import { LoadingDialog, Modal } from "dattatable";
 import { Components } from "gd-sprest-bs";
 import * as moment from "moment";
-import { IEventItem } from "./ds";
+import { DataSource, IEventItem } from "./ds";
 
 /**
  * 
@@ -78,10 +78,9 @@ export class EventForms {
     // Creates an event
     static create(onRefresh: () => void) {
         // Create an item
-        ItemForm.create({
+        DataSource.List.newForm({
             onUpdate: () => { onRefresh(); },
-            onCreateEditForm: props => { return this.updateProps(props); },
-            onFormButtonsRendering: buttons => { return this.updateFooter(buttons); }
+            onCreateEditForm: props => { return this.updateProps(props); }
         });
 
         // Update the modal properties
@@ -91,11 +90,10 @@ export class EventForms {
     // Edits the event
     static edit(eventItem: IEventItem, onRefresh: () => void) {
         // Display the edit form
-        ItemForm.edit({
+        DataSource.List.editForm({
             itemId: eventItem.Id,
             onUpdate: () => { onRefresh(); },
-            onCreateEditForm: props => { return this.updateProps(props); },
-            onFormButtonsRendering: buttons => { return this.updateFooter(buttons); }
+            onCreateEditForm: props => { return this.updateProps(props); }
         });
 
         // Update the modal
@@ -227,24 +225,6 @@ export class EventForms {
         Modal.show();
     }
 
-    // Updates the footer for the new/edit form
-    private static updateFooter(buttons: Components.IButtonProps[]) {
-        // Update the default button
-        buttons[0].type = Components.ButtonTypes.Primary;
-
-        // Add the cancel button
-        buttons.push({
-            text: "Cancel",
-            type: Components.ButtonTypes.Secondary,
-            onClick: () => {
-                ItemForm.close();
-            }
-        });
-
-        // Return the buttons
-        return buttons;
-    }
-
     // Updates the new/edit form properties
     private static updateProps(props: Components.IListFormEditProps) {
         // Set the rendering event
@@ -255,7 +235,7 @@ export class EventForms {
                 ctrl.onValidate = (ctrl, results) => {
                     // See if the start date is after the end date
                     let startDate = results.value;
-                    let endDate = ItemForm.EditForm.getControl("EndDate").getValue();
+                    let endDate = DataSource.List.EditForm.getControl("EndDate").getValue();
                     if (moment(startDate).isAfter(moment(endDate))) {
                         // Update the validation
                         results.isValid = false;
@@ -271,7 +251,7 @@ export class EventForms {
                 // Add validation
                 ctrl.onValidate = (ctrl, results) => {
                     // Ensure an item exists
-                    let item = ItemForm.FormInfo.item as IEventItem;
+                    let item = DataSource.List.ItemForm.FormInfo.item as IEventItem;
                     if (item) {
                         let registeredUsers = item.RegisteredUsers ? item.RegisteredUsers.results.length : 0;
 

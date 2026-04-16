@@ -1,4 +1,5 @@
-import { Components, ContextInfo, Types, Web } from "gd-sprest-bs";
+import { List } from "dattatable";
+import { Components, Types, Web } from "gd-sprest-bs";
 import * as moment from "moment";
 import { Security } from "./security";
 import Strings from "./strings";
@@ -59,8 +60,11 @@ export class DataSource {
         this._filterSet = filterSet;
     }
 
+    // List
+    private static _list: List<IEventItem> = null;
+    static get List(): List<IEventItem> { return this._list; }
+
     // Events
-    private static _events: IEventItem[] = null;
     static get Events(): IEventItem[] {
         // See if we are filtering for active items
         if (this.FilterSet) {
@@ -68,7 +72,7 @@ export class DataSource {
             let today = moment();
 
             // Parse the events
-            this._events.forEach((event) => {
+            this.List.Items.forEach((event) => {
                 let startDate = event.StartDate;
 
                 // See if this event is active
@@ -83,16 +87,19 @@ export class DataSource {
         }
 
         // Return all of the events
-        return this._events;
+        return this.List.Items;
     }
     static loadEvents(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let web = Web();
+            let today = moment().toISOString();
 
-            // Load the data
-            if (Security.IsAdmin) {
-                web.Lists(Strings.Lists.Events).Items().query({
+            // Load the list
+            this._list = new List({
+                listName: Strings.Lists.Events,
+                onInitError: () => { reject(); },
+                onInitialized: () => { resolve(); },
+                itemQuery: Security.IsAdmin ? {
                     Expand: ["AttachmentFiles", "POC", "RegisteredUsers", "WaitListedUsers"],
                     GetAllItems: true,
                     OrderBy: ["StartDate asc"],
@@ -102,19 +109,7 @@ export class DataSource {
                         "RegisteredUsers/Id", "RegisteredUsers/Title", "RegisteredUsers/EMail",
                         "WaitListedUsers/Id", "WaitListedUsers/Title", "WaitListedUsers/EMail"
                     ]
-                }).execute(
-                    // Success
-                    items => {
-                        // Resolve the request
-                        this._events = items.results as any;
-                    },
-                    // Error
-                    () => { reject(); }
-                );
-            }
-            else {
-                let today = moment().toISOString();
-                web.Lists(Strings.Lists.Events).Items().query({
+                } : {
                     Expand: ["AttachmentFiles", "POC", "RegisteredUsers", "WaitListedUsers"],
                     Filter: `StartDate ge '${today}'`,
                     GetAllItems: true,
@@ -125,34 +120,10 @@ export class DataSource {
                         "RegisteredUsers/Id", "RegisteredUsers/Title", "RegisteredUsers/EMail",
                         "WaitListedUsers/Id", "WaitListedUsers/Title", "WaitListedUsers/EMail"
                     ]
-                }).execute(
-                    items => {
-                        // Resolve the request
-                        this._events = items.results as any;
-                    },
-                    () => { reject(); }
-                );
-            }
-            // Load the user permissions for the Events list
-            web.Lists(Strings.Lists.Events).getUserEffectivePermissions(Security.CurrentUser.LoginName).execute(perm => {
-                // Save the user permissions
-                this._eventRegPerms = perm.GetUserEffectivePermissions;
-            }, () => {
-                // Unable to determine the user permissions
-                this._eventRegPerms = {};
-            });
-
-            // Once both queries are complete, return promise
-            web.done(() => {
-                // Resolve the request
-                resolve();
+                }
             });
         });
     }
-
-    // Event Registration Permissions
-    private static _eventRegPerms: Types.SP.BasePermissions;
-    static get EventRegPerms(): Types.SP.BasePermissions { return this._eventRegPerms; };
 
     // Status Filters
     private static _statusFilters: Components.ICheckboxGroupItem[] = [{

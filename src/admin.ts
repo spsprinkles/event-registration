@@ -413,6 +413,10 @@ export class Admin {
     let adminDropdown = Components.Dropdown({
       el: el,
       className: "eventRegAdmin",
+      onChange: () => {
+        // Unselect the item
+        adminDropdown.setValue(null);
+      },
       items: [
         {
           text: eventItem.IsCancelled ? " Uncancel" : " Cancel",

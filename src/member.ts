@@ -14,6 +14,10 @@ export class Member {
         let ddl = Components.Dropdown({
             el: el,
             className: "eventRegAdmin",
+            onChange: () => {
+                // Unselect the item
+                ddl.setValue(null);
+            },
             items: [
                 {
                     text: " Send Email to POCs",
