@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.20.8",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.18.2",
+    "libraryName": "event-registration",
+    "libraryId": "48511c28-deca-4ec0-ac7e-3177aeb6a19b",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "EventRegistration",
+    "solutionShortDescription": "EventRegistration description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

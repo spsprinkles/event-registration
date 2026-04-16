@@ -1,13 +1,15 @@
 {
   "name": "event-registration",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Register for events.",
   "main": "src/index.ts",
   "scripts": {
-    "all": "npm run build && npm run prod && npm run flow",
+    "all": "npm run clean && npm run build && npm run prod && npm run spfx && npm run flow",
     "build": "webpack --mode=development",
+    "clean": "node ./clean.js",
     "flow": "node ./flow.js",
-    "prod": "webpack --mode=production"
+    "prod": "webpack --mode=production",
+    "spfx": "cd spfx && npm run package"
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,7 @@
     "datatables.net": "^2.3.2",
     "datatables.net-bs5": "^2.3.2",
     "dattatable": "^2.11.71",
-    "gd-sprest-bs": "^10.15.69",
+    "gd-sprest-bs": "^10.15.70",
     "jquery": "^3.7.1",
     "moment": "^2.30.1"
   },

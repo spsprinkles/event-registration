@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "event-registration-client-side-solution",
+    "id": "48511c28-deca-4ec0-ac7e-3177aeb6a19b",
+    "version": "0.0.0.3",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "EventRegistration description"
+      },
+      "longDescription": {
+        "default": "EventRegistration description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "event-registration Feature",
+        "description": "The feature that activates elements of the event-registration solution.",
+        "id": "7de5ad0f-9eee-4d4d-85b8-e9d8a376eb10",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "../../dist/event-registration.sppkg"
+  }
+}

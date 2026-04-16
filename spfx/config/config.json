@@ -1,0 +1,23 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "event-registration-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/eventRegistration/EventRegistrationWebPart.js",
+          "manifest": "./src/webparts/eventRegistration/EventRegistrationWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {
+    "main-lib": {
+      "globalName": "main-lib",
+      "path": "../dist/event-registration.min.js"
+    }
+  },
+  "localizedResources": {
+    "EventRegistrationWebPartStrings": "lib/webparts/eventRegistration/loc/{locale}.js"
+  }
+}
