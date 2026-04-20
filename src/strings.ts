@@ -10,7 +10,7 @@ let SourceUrl: string = ContextInfo.webServerRelativeUrl + "/SiteAssets/Event-Re
 // Updates the strings for SPFx
 export const setContext = (context) => {
     // Set the page context
-    ContextInfo.setPageContext(context);
+    ContextInfo.setPageContext(context.pageContext);
 
     // Update the global path
     SourceUrl = ContextInfo.webServerRelativeUrl + "/SiteAssets/Event-Registration/";
