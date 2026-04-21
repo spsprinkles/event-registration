@@ -50,7 +50,10 @@ export default class EventRegistrationWebPart extends BaseClientSideWebPart<IEve
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField('configuration', {
-                  label: "The json configuration for the solution."
+                  label: "Configuration:",
+                  description: "The json configuration for the solution.",
+                  multiline: true,
+                  rows: 10
                 })
               ]
             }
